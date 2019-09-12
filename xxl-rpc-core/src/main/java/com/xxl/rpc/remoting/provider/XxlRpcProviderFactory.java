@@ -102,6 +102,8 @@ public class XxlRpcProviderFactory {
 		// start server
 		serviceAddress = IpUtil.getIpPort(this.ip, port);
 		server = netType.serverClass.newInstance();
+		//用来注册服务端服务接口到注册中心;定义好CallBack,在服务端启动之后server.start(),调用server实现类NettyServer的start(),执行start()里面的onStarted();来注册服务端的服务接口;
+		//server.start();NettyServer.start(),然后onStarted();然后startedCallback.run();
 		server.setStartedCallback(new BaseCallback() {		// serviceRegistry started
 			@Override
 			public void run() throws Exception {
@@ -115,6 +117,8 @@ public class XxlRpcProviderFactory {
 				}
 			}
 		});
+		//用来移除服务端注册服务接口,从注册中心中;
+		//服务端destroy(),调用stop();调用onStop();调用stopedCallback.run();
 		server.setStopedCallback(new BaseCallback() {		// serviceRegistry stoped
 			@Override
 			public void run() {
@@ -138,7 +142,7 @@ public class XxlRpcProviderFactory {
 
 
 	// ---------------------- server invoke ----------------------
-
+	//服务接口的key,和对应bean的缓存
 	/**
 	 * init local rpc service map
 	 */
@@ -175,7 +179,8 @@ public class XxlRpcProviderFactory {
 
 		logger.info(">>>>>>>>>>> xxl-rpc, provider factory add service success. serviceKey = {}, serviceBean = {}", serviceKey, serviceBean.getClass());
 	}
-
+	//在返回结果给客户端时调用;
+	//xxlRpcProviderFactory.invokeService(xxlRpcRequest);
 	/**
 	 * invoke service
 	 *
@@ -208,7 +213,7 @@ public class XxlRpcProviderFactory {
 		}
 
 		try {
-			// invoke
+			// invoke 反射调用,返回结果
 			Class<?> serviceClass = serviceBean.getClass();
 			String methodName = xxlRpcRequest.getMethodName();
 			Class<?>[] parameterTypes = xxlRpcRequest.getParameterTypes();

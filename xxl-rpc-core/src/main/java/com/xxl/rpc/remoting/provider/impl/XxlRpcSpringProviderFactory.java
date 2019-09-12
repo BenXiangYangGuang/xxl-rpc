@@ -95,6 +95,7 @@ public class XxlRpcSpringProviderFactory extends XxlRpcProviderFactory implement
                 String iface = serviceBean.getClass().getInterfaces()[0].getName();
                 String version = xxlRpcService.version();
 
+                //发现服务端提供服务接口,进行服务端接口注册;
                 super.addService(iface, version, serviceBean);
             }
         }

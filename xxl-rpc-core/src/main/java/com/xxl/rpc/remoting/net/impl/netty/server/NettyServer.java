@@ -52,6 +52,7 @@ public class NettyServer extends Server {
                                             .addLast(new IdleStateHandler(0,0,10, TimeUnit.MINUTES))
                                             .addLast(new NettyDecoder(XxlRpcRequest.class, xxlRpcProviderFactory.getSerializer()))
                                             .addLast(new NettyEncoder(XxlRpcResponse.class, xxlRpcProviderFactory.getSerializer()))
+                                            //自己的业务处理逻辑
                                             .addLast(new NettyServerHandler(xxlRpcProviderFactory, serverHandlerPool));
                                 }
                             })
