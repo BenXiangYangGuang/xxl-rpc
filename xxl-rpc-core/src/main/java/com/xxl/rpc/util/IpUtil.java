@@ -163,6 +163,7 @@ public class IpUtil {
 
     /**
      * get ip address
+     * 获取本机IP地址
      *
      * @return String
      */

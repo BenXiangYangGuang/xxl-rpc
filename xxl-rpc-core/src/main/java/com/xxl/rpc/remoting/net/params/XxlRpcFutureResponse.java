@@ -8,6 +8,7 @@ import java.util.concurrent.*;
 
 /**
  * call back future
+ * future 是代表着一个一部计算结果
  *
  * @author xuxueli 2015-11-5 14:26:37
  */

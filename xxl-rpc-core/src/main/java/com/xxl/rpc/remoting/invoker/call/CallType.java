@@ -7,7 +7,7 @@ package com.xxl.rpc.remoting.invoker.call;
  */
 public enum CallType {
 
-
+    //同步
     SYNC,
 
     FUTURE,

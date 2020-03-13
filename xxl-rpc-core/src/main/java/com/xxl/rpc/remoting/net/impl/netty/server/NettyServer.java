@@ -21,7 +21,7 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * netty rpc server
- *
+ * 服务器端 处理 XxlRpcRequest 和 XxlRpcResponse
  * @author xuxueli 2015-10-29 18:17:14
  */
 public class NettyServer extends Server {
@@ -52,6 +52,7 @@ public class NettyServer extends Server {
                                             .addLast(new IdleStateHandler(0,0,10, TimeUnit.MINUTES))
                                             .addLast(new NettyDecoder(XxlRpcRequest.class, xxlRpcProviderFactory.getSerializer()))
                                             .addLast(new NettyEncoder(XxlRpcResponse.class, xxlRpcProviderFactory.getSerializer()))
+                                            //通过netty server服务,调用自己的请求处理方法,处理方法被 包装到了NettyServerHandler中;
                                             //自己的业务处理逻辑
                                             .addLast(new NettyServerHandler(xxlRpcProviderFactory, serverHandlerPool));
                                 }

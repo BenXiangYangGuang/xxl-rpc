@@ -16,6 +16,7 @@ import java.util.concurrent.*;
 
 /**
  * xxl-rpc invoker factory, init service-registry
+ * rpc consumerFactory
  *
  * @author xuxueli 2018-10-19
  */

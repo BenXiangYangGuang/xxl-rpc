@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 /**
  * response
- *
+ * rpc 请求返回结果
  * @author xuxueli 2015-10-29 19:39:54
  */
 public class XxlRpcResponse implements Serializable{

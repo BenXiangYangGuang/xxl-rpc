@@ -11,6 +11,7 @@ import com.xxl.rpc.remoting.net.impl.netty_http.server.NettyHttpServer;
 
 /**
  * remoting net
+ * 通信服务枚举
  *
  * @author xuxueli 2015-11-24 22:09:57
  */

@@ -22,7 +22,7 @@ public class XxlRegistryServiceRegistry extends ServiceRegistry {
     public XxlRegistryClient getXxlRegistryClient() {
         return xxlRegistryClient;
     }
-
+    //新建一个XxlRegistryClient，然后XxlRegistryClient构造函数，开启了registryThread注册线程 和 discoveryThread和服务发现线程；并开始注册和发现；
     @Override
     public void start(Map<String, String> param) {
         String xxlRegistryAddress = param.get(XXL_REGISTRY_ADDRESS);
@@ -36,7 +36,7 @@ public class XxlRegistryServiceRegistry extends ServiceRegistry {
 
         xxlRegistryClient = new XxlRegistryClient(xxlRegistryAddress, accessToken, biz, env);
     }
-
+    //停止注册和服务发现线程
     @Override
     public void stop() {
         if (xxlRegistryClient != null) {

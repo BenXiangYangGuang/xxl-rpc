@@ -16,7 +16,7 @@ import java.util.Map;
 
 /**
  * xxl-rpc provider (for spring)
- *
+ * XxlRpcSpringProviderFactory 将 XxlRpcProviderFactory 功能和spring项目结合起来，进行XxlRpcProviderFactory初始化、启动
  * @author xuxueli 2018-10-18 18:09:20
  */
 public class XxlRpcSpringProviderFactory extends XxlRpcProviderFactory implements ApplicationContextAware, InitializingBean,DisposableBean {
@@ -26,7 +26,7 @@ public class XxlRpcSpringProviderFactory extends XxlRpcProviderFactory implement
     private String netType = NetEnum.NETTY.name();
     private String serialize = Serializer.SerializeEnum.HESSIAN.name();
 
-    private String ip;          	// for registry
+    private String ip;          	// for registry;当前provider服务部署的所在机器ip；
     private int port;				// default port
     private String accessToken;
 
@@ -78,21 +78,22 @@ public class XxlRpcSpringProviderFactory extends XxlRpcProviderFactory implement
 
 
     // ---------------------- util ----------------------
-
+    //发现XxlRpcService服务，并添加到服务列表集合
     @Override
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {//setApplicationContext spring起来之后就执行的方法
+        //获取标有XxlRpcService注解的服务类;首先这个服务类，必须标是spring管理的bean
         Map<String, Object> serviceBeanMap = applicationContext.getBeansWithAnnotation(XxlRpcService.class);
         if (serviceBeanMap!=null && serviceBeanMap.size()>0) {
             for (Object serviceBean : serviceBeanMap.values()) {
-                // valid
+                // valid;必须继承api服务定义的接口方法
                 if (serviceBean.getClass().getInterfaces().length ==0) {
                     throw new XxlRpcException("xxl-rpc, service(XxlRpcService) must inherit interface.");
                 }
                 // add service
                 XxlRpcService xxlRpcService = serviceBean.getClass().getAnnotation(XxlRpcService.class);
-
+                //获取接口的名称
                 String iface = serviceBean.getClass().getInterfaces()[0].getName();
+                //获取版本号
                 String version = xxlRpcService.version();
 
                 //发现服务端提供服务接口,进行服务端接口注册;
@@ -106,12 +107,13 @@ public class XxlRpcSpringProviderFactory extends XxlRpcProviderFactory implement
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        this.prepareConfig();
-        super.start();
+        this.prepareConfig(); //初始化服务参数
+        super.start(); //开启XxlRpcProviderFactory服务，开始netty service服务
     }
 
     @Override
     public void destroy() throws Exception {
+        //销毁XxlRpcProviderFactory服务，销毁netty service服务
         super.stop();
     }
 

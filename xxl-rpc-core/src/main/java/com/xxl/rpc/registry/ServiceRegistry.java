@@ -19,11 +19,13 @@ public abstract class ServiceRegistry {
 
     /**
      * start
+     * 开启注册服务
      */
     public abstract void start(Map<String, String> param);
 
     /**
-     * start
+     * stop
+     * 停止注册服务
      */
     public abstract void stop();
 
