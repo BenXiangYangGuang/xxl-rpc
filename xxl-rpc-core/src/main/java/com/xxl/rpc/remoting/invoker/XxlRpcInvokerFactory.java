@@ -17,7 +17,7 @@ import java.util.concurrent.*;
 /**
  * xxl-rpc invoker factory, init service-registry
  * rpc consumerFactory
- *
+ * 调用者工厂,主要负责处理,consumer的想注册中心的注册;和调用返回结果的处理
  * @author xuxueli 2018-10-19
  */
 public class XxlRpcInvokerFactory {
@@ -46,7 +46,7 @@ public class XxlRpcInvokerFactory {
 
 
     // ---------------------- start / stop ----------------------
-
+    //新建一个 serviceRegistryClass,注册类实例,并连接到注册中心
     public void start() throws Exception {
         // start registry
         if (serviceRegistryClass != null) {
@@ -61,7 +61,8 @@ public class XxlRpcInvokerFactory {
             serviceRegistry.stop();
         }
 
-        // stop callback
+        // stop callback;
+        // 触发ConnectClient中的run(),执行clientConnect 的关闭
         if (stopCallbackList.size() > 0) {
             for (BaseCallback callback: stopCallbackList) {
                 try {
@@ -86,7 +87,7 @@ public class XxlRpcInvokerFactory {
 
 
     // ---------------------- service registry ----------------------
-
+    //invokerFactory stop后 进行回调处理的方法集合
     private List<BaseCallback> stopCallbackList = new ArrayList<BaseCallback>();
 
     public void addStopCallBack(BaseCallback callback){
@@ -97,7 +98,7 @@ public class XxlRpcInvokerFactory {
     // ---------------------- future-response pool ----------------------
 
     // XxlRpcFutureResponseFactory
-
+    //requestId 和返回结果 的集合,缓存XxlRpcFutureResponse，作为一个请求的请求和请求返回的封装；
     private ConcurrentMap<String, XxlRpcFutureResponse> futureResponsePool = new ConcurrentHashMap<String, XxlRpcFutureResponse>();
     public void setInvokerFuture(String requestId, XxlRpcFutureResponse futureResponse){
         futureResponsePool.put(requestId, futureResponse);
@@ -105,6 +106,7 @@ public class XxlRpcInvokerFactory {
     public void removeInvokerFuture(String requestId){
         futureResponsePool.remove(requestId);
     }
+    //客户端，处理provider 返回结果的处理；
     public void notifyInvokerFuture(String requestId, final XxlRpcResponse xxlRpcResponse){
 
         // get
@@ -144,7 +146,7 @@ public class XxlRpcInvokerFactory {
 
 
     // ---------------------- response callback ThreadPool ----------------------
-
+    // callback 线程池，启动，并绑定回调函数，并启动线程池
     private ThreadPoolExecutor responseCallbackThreadPool = null;
     public void executeResponseCallback(Runnable runnable){
 

@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * rpc netty client handler
+ * netty client rpc 请求处理方法handler封装
  *
  * @author xuxueli 2015-10-31 18:00:27
  */
@@ -25,7 +26,7 @@ public class NettyClientHandler extends SimpleChannelInboundHandler<XxlRpcRespon
 
 	@Override
 	protected void channelRead0(ChannelHandlerContext ctx, XxlRpcResponse xxlRpcResponse) throws Exception {
-
+		//通知客户端，这个请求已经响应，请处理；
 		// notify response
 		xxlRpcInvokerFactory.notifyInvokerFuture(xxlRpcResponse.getRequestId(), xxlRpcResponse);
 	}

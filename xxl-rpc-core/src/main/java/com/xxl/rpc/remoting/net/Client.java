@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * i client
+ * 消费者通过客户端进行,发情请求的优化,比如客户端的线程池,变异步请求,为同步请求;
  * @author xuxueli 2015-11-24 22:18:10
  */
 public abstract class Client {

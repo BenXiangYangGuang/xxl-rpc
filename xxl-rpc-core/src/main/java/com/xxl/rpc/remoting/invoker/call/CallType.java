@@ -12,7 +12,7 @@ public enum CallType {
 
     FUTURE,
 
-    CALLBACK,
+    CALLBACK, //回调;注册一个回调函数
 
     ONEWAY;
 

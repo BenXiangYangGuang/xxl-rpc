@@ -12,6 +12,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 /**
+ * 客户端链接抽象类
  * @author xuxueli 2018-10-19
  */
 public abstract class ConnectClient {
@@ -25,7 +26,7 @@ public abstract class ConnectClient {
     public abstract void close();
 
     public abstract boolean isValidate();
-
+    //sync 同步发送
     public abstract void send(XxlRpcRequest xxlRpcRequest) throws Exception ;
 
 
@@ -51,7 +52,11 @@ public abstract class ConnectClient {
     }
 
     private static volatile ConcurrentMap<String, ConnectClient> connectClientMap;        // (static) alread addStopCallBack
+    //客户端链接 在connectClientMap中进行更新，防止多线程更新，根据address进行 加锁
     private static volatile ConcurrentMap<String, Object> connectClientLockMap = new ConcurrentHashMap<>();
+
+
+    //同步初始化ConnectClient容器 connectClientMap；并从中获取一个ConnectClient
     private static ConnectClient getPool(String address, Class<? extends ConnectClient> connectClientImpl,
                                          final XxlRpcReferenceBean xxlRpcReferenceBean) throws Exception {
 
@@ -61,12 +66,14 @@ public abstract class ConnectClient {
                 if (connectClientMap == null) {
                     // init
                     connectClientMap = new ConcurrentHashMap<String, ConnectClient>();
-                    // stop callback
+                    // stop callback 清除客户端
                     xxlRpcReferenceBean.getInvokerFactory().addStopCallBack(new BaseCallback() {
                         @Override
                         public void run() throws Exception {
                             if (connectClientMap.size() > 0) {
                                 for (String key: connectClientMap.keySet()) {
+                                    //key 是一个 client address 链接的地址；
+                                    //一个address代表一个链接
                                     ConnectClient clientPool = connectClientMap.get(key);
                                     clientPool.close();
                                 }
@@ -109,6 +116,7 @@ public abstract class ConnectClient {
             // set pool
             ConnectClient connectClient_new = connectClientImpl.newInstance();
             try {
+                //客户端链接初始化
                 connectClient_new.init(address, xxlRpcReferenceBean.getSerializer(), xxlRpcReferenceBean.getInvokerFactory());
                 connectClientMap.put(address, connectClient_new);
             } catch (Exception e) {

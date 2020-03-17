@@ -27,6 +27,15 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * rpc reference bean, use by api
+ * 一个api controller含有多个@XxlRpcReference,对每一个@XxlRpcReference注解服务的包装,
+ * 为这个标有XxlRpcReference注解的字段 调用provider提供的rpc服务 而实现的包装，就行调用本地服务一样调用rpc远程服务；
+ *
+ * XxlRpcReference注解属性的包装,一个抽象,对一个rpc消费者的抽象
+ * 根据@XxlRpcReference注解,包装为一个调用详情的Bean
+ *
+ * 功能：
+ * 	1.开启 netty client 模式，处理客户端请求；
+ * 	2.处理 @XxlRpcReference 注解，远程服务的调用
  *
  * @author xuxueli 2015-10-29 20:18:32
  */
@@ -103,6 +112,7 @@ public class XxlRpcReferenceBean {
 		}
 
 		// init Client
+		//初始化一个client服务，比如netty线程池服务；
 		initClient();
 	}
 
@@ -121,7 +131,7 @@ public class XxlRpcReferenceBean {
 	// ---------------------- initClient ----------------------
 
 	Client client = null;
-
+	//一个rpc调用服务，一个client服务
 	private void initClient() {
 		try {
 			client = netType.clientClass.newInstance();
@@ -133,7 +143,7 @@ public class XxlRpcReferenceBean {
 
 
 	// ---------------------- util ----------------------
-
+	//带有XxlRpcReference注解的属性，像调用本地方法一样，进行调用rpc provider包装处理；
 	public Object getObject() {
 		return Proxy.newProxyInstance(Thread.currentThread()
 				.getContextClassLoader(), new Class[] { iface },
@@ -149,6 +159,7 @@ public class XxlRpcReferenceBean {
 						Object[] parameters = args;
 
 						// filter for generic
+						//泛化调用
 						if (className.equals(XxlRpcGenericService.class.getName()) && methodName.equals("invoke")) {
 
 							Class<?>[] paramTypes = null;

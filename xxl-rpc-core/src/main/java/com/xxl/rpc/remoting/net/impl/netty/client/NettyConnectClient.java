@@ -30,7 +30,7 @@ public class NettyConnectClient extends ConnectClient {
     private EventLoopGroup group;
     private Channel channel;
 
-
+    //初始化一个nettyclient；进行客户端xxlRpcRequest请求处理
     @Override
     public void init(String address, final Serializer serializer, final XxlRpcInvokerFactory xxlRpcInvokerFactory) throws Exception {
 
@@ -50,6 +50,7 @@ public class NettyConnectClient extends ConnectClient {
                                 .addLast(new IdleStateHandler(0,0,10, TimeUnit.MINUTES))
                                 .addLast(new NettyEncoder(XxlRpcRequest.class, serializer))
                                 .addLast(new NettyDecoder(XxlRpcResponse.class, serializer))
+                                //服务端，进行回应，客户端读取请求返回，并处理，逻辑的封装
                                 .addLast(new NettyClientHandler(xxlRpcInvokerFactory));
                     }
                 })

@@ -10,6 +10,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 /**
+ * 调用的Future 封装了XxlRpcFutureResponse
+ * Async 异步调用的返回结果
  * @author xuxueli 2018-10-22 18:31:42
  */
 public class XxlRpcInvokeFuture implements Future {
@@ -67,7 +69,7 @@ public class XxlRpcInvokeFuture implements Future {
 
 
     // ---------------------- thread invoke future ----------------------
-
+    //线程变量
     private static ThreadLocal<XxlRpcInvokeFuture> threadInvokerFuture = new ThreadLocal<XxlRpcInvokeFuture>();
 
     /**
