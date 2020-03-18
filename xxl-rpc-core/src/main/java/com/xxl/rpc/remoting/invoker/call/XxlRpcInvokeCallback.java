@@ -2,6 +2,7 @@ package com.xxl.rpc.remoting.invoker.call;
 
 
 /**
+ * CallType 类型为 CallBack时，调用的后，使用的回调函数
  * @author xuxueli 2018-10-23
  */
 public abstract class XxlRpcInvokeCallback<T> {

@@ -219,6 +219,10 @@ public class XxlRpcReferenceBean {
 	                    xxlRpcRequest.setParameters(parameters);
 	                    
 	                    // send
+						//所有类型的方法都会使用NettyClientHandler中的xxlRpcInvokerFactory.notifyInvokerFuture(xxlRpcResponse.getRequestId(), xxlRpcResponse);
+						//用这个方法，client来处理服务端返回的结果；然后根据不同的callType，进行不同 的返回结果的处理
+
+						//同步方法，使用futureResponse实现了Future接口，futureResponse.get(timeout, TimeUnit.MILLISECONDS)；同步阻塞获取结果
 						if (CallType.SYNC == callType) {
 							// future-response set
 							XxlRpcFutureResponse futureResponse = new XxlRpcFutureResponse(invokerFactory, xxlRpcRequest, null);
@@ -238,6 +242,8 @@ public class XxlRpcReferenceBean {
 								throw (e instanceof XxlRpcException)?e:new XxlRpcException(e);
 							} finally{
 								// future-response remove
+								//客户端缓存了XxlRpcFutureResponse ConcurrentMap<String, XxlRpcFutureResponse> futureResponsePool = new ConcurrentHashMap<String, XxlRpcFutureResponse>();
+								//请求已经处理，移除客户端中的缓存XxlRpcFutureResponse
 								futureResponse.removeInvokerFuture();
 							}
 						} else if (CallType.FUTURE == callType) {
@@ -245,6 +251,8 @@ public class XxlRpcReferenceBean {
 							XxlRpcFutureResponse futureResponse = new XxlRpcFutureResponse(invokerFactory, xxlRpcRequest, null);
                             try {
 								// invoke future set
+								//新建一个XxlRpcInvokeFuture，进行futureResponse的封装；
+								//XxlRpcInvokeFuture实现了Future，另起一个线程，异步在这个线程中对futureResponse的结果，进行处理
 								XxlRpcInvokeFuture invokeFuture = new XxlRpcInvokeFuture(futureResponse);
 								XxlRpcInvokeFuture.setFuture(invokeFuture);
 
@@ -264,6 +272,7 @@ public class XxlRpcReferenceBean {
 						} else if (CallType.CALLBACK == callType) {
 
 							// get callback
+							//注册一个回调函数，在notifyInvokerFuture()，根据是否 有回调函数，根据不同返回结果，进行回调函数的处理；
 							XxlRpcInvokeCallback finalInvokeCallback = invokeCallback;
 							XxlRpcInvokeCallback threadInvokeCallback = XxlRpcInvokeCallback.getCallback();
 							if (threadInvokeCallback != null) {
@@ -288,6 +297,7 @@ public class XxlRpcReferenceBean {
 
 							return null;
 						} else if (CallType.ONEWAY == callType) {
+							//一种方式，只是简单的发送请求，返回xxlRpcResponse的简单形式
                             client.asyncSend(finalAddress, xxlRpcRequest);
                             return null;
                         } else {
