@@ -254,6 +254,7 @@ public class XxlRpcReferenceBean {
 								//新建一个XxlRpcInvokeFuture，进行futureResponse的封装；
 								//XxlRpcInvokeFuture实现了Future，另起一个线程，异步在这个线程中对futureResponse的结果，进行处理
 								XxlRpcInvokeFuture invokeFuture = new XxlRpcInvokeFuture(futureResponse);
+								//将这个结果invokeFuture绑定到这个XxlRpcInvokeFuture类上；从而通过这个类进行获取结果；
 								XxlRpcInvokeFuture.setFuture(invokeFuture);
 
                                 // do invoke

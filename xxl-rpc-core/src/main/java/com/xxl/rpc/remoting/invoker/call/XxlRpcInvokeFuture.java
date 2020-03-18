@@ -70,6 +70,7 @@ public class XxlRpcInvokeFuture implements Future {
 
     // ---------------------- thread invoke future ----------------------
     //线程变量
+    //ThreadLocal为了保存Future<T> future结果；儿绑定到这个线程上的；
     private static ThreadLocal<XxlRpcInvokeFuture> threadInvokerFuture = new ThreadLocal<XxlRpcInvokeFuture>();
 
     /**
